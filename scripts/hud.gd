@@ -28,6 +28,9 @@ var asal_gerak = Vector2.ZERO
 var pos_gerak = Vector2.ZERO
 var _bicara_id = 0
 var _lewati = false
+var celah = false
+var waspada = 0.0
+var kejar_tampil = false
 
 
 func _ready():
@@ -180,6 +183,15 @@ func reset_input():
     GameState.lihat = Vector2.ZERO
 
 
+func set_celah(b: bool):
+    celah = b
+
+
+func set_waspada(v: float, kejar: bool):
+    waspada = v
+    kejar_tampil = kejar
+
+
 func set_prompt(t: String):
     label_prompt.text = t
     label_prompt.visible = (t != "" and kontrol_tampil)
@@ -244,6 +256,18 @@ func _gambar():
         return
     var s = _ukuran()
     var font = ThemeDB.fallback_font
+    if celah:
+        kontrol.draw_rect(Rect2(0.0, 0.0, s.x, s.y * 0.36), Color(0, 0, 0, 0.97))
+        kontrol.draw_rect(Rect2(0.0, s.y * 0.64, s.x, s.y * 0.36), Color(0, 0, 0, 0.97))
+    if waspada > 0.02:
+        var lebar = 180.0
+        var x0 = s.x * 0.5 - lebar * 0.5
+        kontrol.draw_rect(Rect2(x0, 14.0, lebar, 10.0), Color(0, 0, 0, 0.5))
+        kontrol.draw_rect(Rect2(x0, 14.0, lebar * waspada, 10.0), Color(0.9, 0.1, 0.1, 0.9))
+        var label_w = "DIAWASI"
+        if kejar_tampil:
+            label_w = "LARI!"
+        kontrol.draw_string(font, Vector2(x0, 42.0), label_w, HORIZONTAL_ALIGNMENT_CENTER, lebar, 16, Color(1, 0.4, 0.4, 0.95))
     var pusat = Vector2(120.0, s.y - 120.0)
     if jari_gerak != -1:
         pusat = asal_gerak

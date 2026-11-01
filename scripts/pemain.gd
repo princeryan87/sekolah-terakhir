@@ -11,6 +11,7 @@ var senter
 var yaw = 0.0
 var pitch = 0.0
 var terkunci = false
+var beku = false
 var senter_ada = false
 var sasaran = null
 var _bob = 0.0
@@ -86,6 +87,11 @@ func _physics_process(delta):
 
     rotation.y = yaw
     kamera.rotation.x = pitch
+
+    if beku:
+        velocity = Vector3.ZERO
+        sasaran = null
+        return
 
     var kec = JALAN
     if lari:

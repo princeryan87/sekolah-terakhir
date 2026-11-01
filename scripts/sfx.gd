@@ -9,7 +9,8 @@ const LOOPS = ["ambience_sekolah", "detak_jantung"]
 const DAFTAR = [
     "senter_klik", "langkah_jalan", "langkah_lari", "pintu_buka", "pintu_terkunci",
     "kunci_ambil", "sapu", "listrik_mati", "bel_sekolah", "langkah_atas", "bisik",
-    "jumpscare", "kuntilanak_tawa", "detak_jantung", "ambience_sekolah"
+    "jumpscare", "kuntilanak_tawa", "detak_jantung", "ambience_sekolah",
+    "langkah_guru", "guru_kejar"
 ]
 
 var _cache = {}
@@ -142,6 +143,10 @@ func _sintesis(nama: String):
             d = _s_jantung()
         "ambience_sekolah":
             d = _s_ambience()
+        "langkah_guru":
+            d = _s_langkah(0.18, 140.0, 2.4, 40.0)
+        "guru_kejar":
+            d = _s_guru_kejar()
         _:
             d = _s_klik()
     return _ke_wav(d, nama in LOOPS)
@@ -372,4 +377,18 @@ func _s_ambience():
         lp += 0.02 * (n - lp)
         var dengung = sin(TAU * 55.0 * t) * 0.18 + sin(TAU * 82.5 * t) * 0.1 * (0.6 + 0.4 * sin(TAU * t / 4.0))
         d[i] = dengung * 0.8 + lp * 2.5 * angin
+    return d
+
+
+func _s_guru_kejar():
+    var d = _kosong(1.1)
+    var fase = 0.0
+    for i in range(d.size()):
+        var t = float(i) / RATE
+        var f = 90.0 + 40.0 * sin(t * 9.0) - 20.0 * t
+        fase += TAU * f / RATE
+        var saw = fmod(fase, TAU) / PI - 1.0
+        var n = randf() * 2.0 - 1.0
+        var env = minf(t * 30.0, 1.0) * exp(-t * 2.2)
+        d[i] = clampf((saw * 0.8 + n * 0.4) * env * 1.3, -1.0, 1.0)
     return d

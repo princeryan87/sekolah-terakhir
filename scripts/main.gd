@@ -56,7 +56,9 @@ func _process(_delta):
     if pemain == null or hud == null:
         return
     var teks = ""
-    if not pemain.terkunci and pemain.sasaran != null and is_instance_valid(pemain.sasaran):
+    if dunia.sembunyi_id != "":
+        teks = "Keluar dari persembunyian"
+    elif not pemain.terkunci and pemain.sasaran != null and is_instance_valid(pemain.sasaran):
         teks = str(pemain.sasaran.get_meta("label", ""))
     hud.set_prompt(teks)
 

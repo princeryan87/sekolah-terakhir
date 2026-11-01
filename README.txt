@@ -1,10 +1,28 @@
-SEKOLAH TERAKHIR: jam 00:00  (Tahap 0 + 1, prototype)
+SEKOLAH TERAKHIR: jam 00:00  (Tahap 0 + 1 + 2)
 ======================================================
 
 ISI
 - Proyek Godot 4.3 (renderer Compatibility), semua objek dibuat lewat kode.
-- Alur prototype: bersihkan kelas 9B (3 sampah) -> listrik mati, jam 00:00 ->
-  cari kunci lobi di kelas 9A -> jumpscare Kuntilanak -> buka pintu lobi -> tamat.
+- Alur: bersihkan kelas 9B (3 sampah) -> listrik mati, jam 00:00 -> cari kunci lobi
+  di kelas 9A -> jumpscare Kuntilanak -> Sang Guru muncul dan berpatroli ->
+  buka pintu lobi tanpa ketahuan -> tamat (bersambung ke Tahap 3).
+- 3 dokumen cerita tersebar (kelas 9B, dinding lorong, meja guru 9A).
+
+SANG GURU
+- Berpatroli di lorong dan kedua kelas. Punya mata dan telinga.
+- Mata: melihat lebih jauh jika senter menyala. Butuh beberapa detik menyadari
+  kamu (bar DIAWASI di atas layar). Jika bar penuh, dia mengejar.
+- Telinga: berlari terdengar jauh, berjalan terdengar dekat, diam tidak terdengar.
+  Membuka pintu juga berisik.
+- Sembunyi: loker di lorong kanan dan lemari di kelas (tombol AKSI). Jika dia
+  melihatmu masuk, dia akan langsung memeriksa tempat itu. Jika tidak, kadang dia
+  tetap memeriksa tempat sembunyi dekat tempat terakhir kamu terlihat.
+- Berlari lebih cepat dari dia, tapi berisik. Detak jantung makin cepat saat dia dekat.
+- Tertangkap: layar TERTANGKAP, lalu mencoba lagi dari kelas 9A.
+
+PENGATUR KESULITAN (scripts/guru.gd, bagian atas)
+- KEC_KEJAR = 3.9  (kecepatan kejar; kecepatan lari Raka 4.3)
+- KEC_PATROLI = 1.6
 
 CARA UNGGAH KE GITHUB
 1. Buat repo baru (misal: sekolah-terakhir), kosong.
