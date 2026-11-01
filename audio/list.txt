@@ -1,0 +1,58 @@
+DAFTAR NAMA FILE SUARA (SFX) - SEKOLAH TERAKHIR
+================================================
+
+CARA PAKAI
+- Taruh file suara di folder ini (audio/) dengan nama PERSIS seperti di bawah.
+- Format boleh .ogg, .wav, atau .mp3 (boleh campur, satu nama = satu format).
+- Huruf kecil semua, tanpa spasi. Contoh: pintu_buka.ogg
+- Bangun ulang (build) di GitHub Actions. File yang ada akan dipakai
+  menggantikan suara buatan kode.
+- Hapus file lalu build ulang = suara buatan kode kembali.
+- Suara yang tidak ada filenya tetap berbunyi (dibuat lewat kode).
+- Tips: WAV pakai 16-bit biasa. Suara loop sebaiknya .ogg atau .wav.
+
+PRIORITAS 1: SUDAH DIPAKAI DI PROTOTYPE (Tahap 1)
+ambience_sekolah   Dengung sunyi bangunan kosong + angin pelan (LOOP, 30-60 detik)
+langkah_jalan      Satu langkah kaki di lantai keramik
+langkah_lari       Langkah cepat (boleh sama dengan langkah_jalan)
+pintu_buka         Pintu kayu berderit
+pintu_terkunci     Gagang pintu digoyang, terkunci
+kunci_ambil        Gemerincing kunci
+sapu               Suara menyapu / mengambil sampah
+senter_klik        Klik tombol senter
+listrik_mati       Dengung listrik lalu padam
+bel_sekolah        Bel masuk sekolah (lebih bagus yang agak tua/serak)
+langkah_atas       Langkah kaki dari lantai atas (teredam, beberapa langkah)
+bisik              Bisikan samar
+jumpscare          Dentuman keras + nada tajam (1-2 detik)
+detak_jantung      Detak jantung (LOOP, 1 detik = dua dentuman)
+kuntilanak_tawa    Tawa melengking Kuntilanak (2-3 detik)
+
+PRIORITAS 2: BELUM DIPAKAI (untuk Tahap 3 dan seterusnya)
+kuntilanak_tangis  Tangisan lirih
+genderuwo_geram    Geraman berat
+genderuwo_langkah  Langkah berat
+hantu_siswi_nyanyi Anak perempuan bersenandung pelan
+hantu_siswi_bisik  Bisikan anak kecil
+loker_buka         Loker logam dibuka
+loker_tutup        Loker logam ditutup
+kertas_ambil       Gemerisik kertas
+ketuk_pintu        Ketukan di pintu
+kapur_papan        Goresan kapur di papan tulis
+jam_tik            Detak jam dinding
+ending_lega        Pintu gerbang terbuka / angin pagi
+
+IDE SERU
+Rekam suara sendiri lewat HP (tawa, bisikan, geraman, senandung) lalu simpan
+dengan nama di atas. Suara sendiri sering lebih seram daripada SFX internet.
+
+TEMPAT MENCARI GRATIS (pilih lisensi CC0)
+- freesound.org (filter: Creative Commons 0)
+- pixabay.com/sound-effects
+- kenney.nl/assets (kategori audio)
+- opengameart.org (cek lisensi tiap file)
+
+KATA KUNCI PENCARIAN (bahasa Inggris)
+creepy ambience, school bell, door creak, locked door handle, footsteps tile,
+jumpscare sting, heartbeat, whisper, female ghost laugh, growl monster,
+child humming, locker, flashlight click, power outage, keys jingle, sweeping
