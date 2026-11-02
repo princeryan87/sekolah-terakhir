@@ -5,33 +5,19 @@ extends Node3D
 
 const Util = preload("res://scripts/util.gd")
 
-const KEC_PATROLI = 1.6
-const KEC_CURIGA = 2.4
-const KEC_CARI = 2.2
-const KEC_KEJAR = 3.9
+# Pengaturan kesulitan (misi boleh mengubah setelah guru dibuat)
+var kec_patroli = 1.6
+var kec_curiga = 2.4
+var kec_cari = 2.2
+var kec_kejar = 3.9
+var jarak_lihat = 5.5
+var jarak_lihat_senter = 10.0
 
-const NODE = {
-    "K1": Vector3(0.0, 0.0, -2.5),
-    "K2": Vector3(0.0, 0.0, -6.0),
-    "K3": Vector3(0.0, 0.0, -10.0),
-    "K4": Vector3(0.0, 0.0, -14.0),
-    "K5": Vector3(0.0, 0.0, -18.0),
-    "K6": Vector3(0.0, 0.0, -21.5),
-    "DB": Vector3(-1.5, 0.0, -6.0),
-    "B1": Vector3(-3.0, 0.0, -6.0),
-    "B2": Vector3(-3.0, 0.0, -3.4),
-    "B3": Vector3(-3.0, 0.0, -8.8),
-    "DA": Vector3(1.5, 0.0, -6.0),
-    "A1": Vector3(3.0, 0.0, -6.0),
-    "A2": Vector3(3.0, 0.0, -3.4),
-    "A3": Vector3(3.0, 0.0, -8.8)
-}
-const SISI = [
-    ["K1", "K2"], ["K2", "K3"], ["K3", "K4"], ["K4", "K5"], ["K5", "K6"],
-    ["K2", "DB"], ["DB", "B1"], ["B1", "B2"], ["B1", "B3"],
-    ["K2", "DA"], ["DA", "A1"], ["A1", "A2"], ["A1", "A3"]
-]
-const TUJUAN_PATROLI = ["K1", "K3", "K5", "K6", "B2", "B3", "A2", "A3"]
+# Peta jalur diambil dari dunia (dunia.peta_node, peta_sisi, peta_patroli, peta_pintu)
+var NODE = {}
+var SISI = []
+var TUJUAN_PATROLI = []
+var PINTU_NODE = {}
 
 var dunia
 var pemain
@@ -51,6 +37,10 @@ var _jalur_hilang = false
 
 
 func _ready():
+    NODE = dunia.peta_node
+    SISI = dunia.peta_sisi
+    TUJUAN_PATROLI = dunia.peta_patroli
+    PINTU_NODE = dunia.peta_pintu
     for n in NODE:
         graf[n] = []
     for s in SISI:
@@ -122,7 +112,7 @@ func dengar(pos: Vector3, radius: float):
 # ---------- jalur ----------
 
 func _node_terdekat(p: Vector3) -> String:
-    var terbaik = "K1"
+    var terbaik = NODE.keys()[0]
     var jarak_min = 1000000.0
     for n in NODE:
         var d = NODE[n].distance_to(Vector3(p.x, 0.0, p.z))
@@ -215,10 +205,9 @@ func _buka_pintu_depan():
     if jalur.is_empty():
         return
     var w = jalur[0]
-    if w.distance_to(NODE["DB"]) < 0.1 and global_position.distance_to(w) < 3.2:
-        dunia.guru_buka("pintu_9b")
-    elif w.distance_to(NODE["DA"]) < 0.1 and global_position.distance_to(w) < 3.2:
-        dunia.guru_buka("pintu_9a")
+    for n in PINTU_NODE:
+        if w.distance_to(NODE[n]) < 0.1 and global_position.distance_to(w) < 3.2:
+            dunia.guru_buka(PINTU_NODE[n])
 
 
 # ---------- indra ----------
@@ -230,9 +219,9 @@ func _bisa_melihat(jarak_datar: float) -> bool:
     var target = pemain.global_position + Vector3(0.0, 1.3, 0.0)
     var ke = target - mata
     var jarak = ke.length()
-    var batas = 5.5
+    var batas = jarak_lihat
     if pemain.senter.visible:
-        batas = 10.0
+        batas = jarak_lihat_senter
     if jarak > batas:
         return false
     var depan = Vector3(-sin(rotation.y), 0.0, -cos(rotation.y))
@@ -299,7 +288,7 @@ func _process(delta):
         "patroli":
             if melihat_sekarang and waspada > 0.3:
                 _hadap_ke(pemain.global_position, delta)
-            elif _maju(delta, KEC_PATROLI):
+            elif _maju(delta, kec_patroli):
                 state = "tunggu"
                 timer = randf_range(2.0, 4.0)
             else:
@@ -314,7 +303,7 @@ func _process(delta):
         "curiga":
             if melihat_sekarang and waspada > 0.3:
                 _hadap_ke(pemain.global_position, delta)
-            elif _maju(delta, KEC_CURIGA):
+            elif _maju(delta, kec_curiga):
                 state = "tunggu"
                 timer = 3.0
             else:
@@ -323,26 +312,26 @@ func _process(delta):
             bergerak = true
             if melihat_sekarang:
                 jalur = [Vector3(pemain.global_position.x, 0.0, pemain.global_position.z)]
-                _maju(delta, KEC_KEJAR)
+                _maju(delta, kec_kejar)
                 if dist < 1.0:
                     dunia.tertangkap()
             elif dunia.sembunyi_id != "" and dunia.guru_tahu:
                 if not _ke_spot:
                     _ke_spot = true
                     _jalur_ke(dunia.sembunyi_pos)
-                _maju(delta, KEC_KEJAR)
+                _maju(delta, kec_kejar)
                 if global_position.distance_to(dunia.sembunyi_pos) < 1.4:
                     dunia.tertangkap()
             else:
                 if not _jalur_hilang:
                     _jalur_hilang = true
                     _jalur_ke(terakhir_terlihat)
-                var tiba = _maju(delta, KEC_KEJAR)
+                var tiba = _maju(delta, kec_kejar)
                 if tiba or tak_terlihat > 6.0:
                     _mulai_cari()
         "cari":
             if not jalur.is_empty():
-                _maju(delta, KEC_CARI)
+                _maju(delta, kec_cari)
                 bergerak = true
             else:
                 var dekat_spot = dunia.sembunyi_id != "" and global_position.distance_to(dunia.sembunyi_pos) < 6.0

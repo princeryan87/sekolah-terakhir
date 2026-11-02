@@ -29,6 +29,7 @@ var pos_gerak = Vector2.ZERO
 var _bicara_id = 0
 var _lewati = false
 var celah = false
+var pilihan_menu = "kiri"
 var waspada = 0.0
 var kejar_tampil = false
 
@@ -125,6 +126,27 @@ func _process(_delta):
 
 
 # ---------- tampilan ----------
+
+func reset_total():
+    kontrol_tampil = false
+    senter_tersedia = false
+    menunggu = false
+    celah = false
+    waspada = 0.0
+    kejar_tampil = false
+    _bicara_id += 1
+    label_prompt.visible = false
+    label_misi.visible = false
+    label_misi.text = ""
+    label_bicara.visible = false
+    label_kartu.visible = false
+    label_judul.visible = false
+    label_sub.visible = false
+    label_info.visible = false
+    kilat_rect.color = Color(1, 1, 1, 0)
+    overlay.color = Color(0, 0, 0, 0)
+    reset_input()
+
 
 func hitamkan():
     overlay.color = Color(0, 0, 0, 1)
@@ -307,6 +329,9 @@ func _input(event):
         _sentuh_geser(event.index, event.position, event.relative)
     elif event is InputEventMouseButton:
         if event.pressed and menunggu:
+            pilihan_menu = "kiri"
+            if event.position.x > _ukuran().x * 0.5:
+                pilihan_menu = "kanan"
             menunggu = false
             layar_disentuh.emit()
     elif event is InputEventKey:
@@ -317,6 +342,9 @@ func _input(event):
 
 func _sentuh_mulai(idx: int, pos: Vector2):
     if menunggu:
+        pilihan_menu = "kiri"
+        if pos.x > _ukuran().x * 0.5:
+            pilihan_menu = "kanan"
         menunggu = false
         layar_disentuh.emit()
         return

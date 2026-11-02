@@ -16,6 +16,8 @@ const DAFTAR = [
 var _cache = {}
 var _pemutar = []
 var _loop_pemutar = {}
+var siap = false
+var _ekstra = []
 
 
 func _ready():
@@ -23,12 +25,24 @@ func _ready():
         var p = AudioStreamPlayer.new()
         add_child(p)
         _pemutar.append(p)
+    # suara tambahan per misi (scripts/sfx_misi_NN.gd), dimuat jika ada
+    for n in range(3, 11):
+        var jalur = "res://scripts/sfx_misi_%02d.gd" % n
+        if ResourceLoader.exists(jalur):
+            var e = load(jalur).new()
+            _ekstra.append(e)
 
 
 func siapkan():
-    for nama in DAFTAR:
+    var semua = DAFTAR.duplicate()
+    for e in _ekstra:
+        for nama in e.daftar():
+            if not semua.has(nama):
+                semua.append(nama)
+    for nama in semua:
         _ambil(nama)
         await get_tree().process_frame
+    siap = true
 
 
 func putar(nama: String, db: float = 0.0, pitch: float = 1.0):
@@ -93,7 +107,7 @@ func _dari_file(nama: String):
         if ResourceLoader.exists(jalur):
             var r = load(jalur)
             if r is AudioStream:
-                if nama in LOOPS:
+                if _apakah_loop(nama):
                     _atur_loop_file(r)
                 return r
     return null
@@ -148,8 +162,14 @@ func _sintesis(nama: String):
         "guru_kejar":
             d = _s_guru_kejar()
         _:
-            d = _s_klik()
-    return _ke_wav(d, nama in LOOPS)
+            for e in _ekstra:
+                var hasil = e.resep(nama, self)
+                if hasil != null:
+                    d = hasil
+                    break
+            if d == null:
+                d = _s_klik()
+    return _ke_wav(d, _apakah_loop(nama))
 
 
 func _ke_wav(d: PackedFloat32Array, ulang: bool) -> AudioStreamWAV:
@@ -392,3 +412,18 @@ func _s_guru_kejar():
         var env = minf(t * 30.0, 1.0) * exp(-t * 2.2)
         d[i] = clampf((saw * 0.8 + n * 0.4) * env * 1.3, -1.0, 1.0)
     return d
+
+
+func _apakah_loop(nama: String) -> bool:
+    if nama in LOOPS:
+        return true
+    for e in _ekstra:
+        if e.has_method("loops") and nama in e.loops():
+            return true
+    return false
+
+
+func matikan_semua_loop():
+    for k in _loop_pemutar:
+        _loop_pemutar[k].queue_free()
+    _loop_pemutar.clear()

@@ -1,0 +1,83 @@
+PANDUAN KODE: THE LAST (Godot 4.3, Compatibility, semua objek dibuat lewat kode)
+=================================================================================
+Tempel file ini ke chat baru agar Claude tidak perlu membaca semua kode lama.
+
+ATURAN UPDATE
+- Tiap misi baru = 1 zip berisi HANYA file baru/berubah. Ekstrak, lalu unggah ke repo
+  yang sama dalam SATU commit (file bernama sama otomatis tertimpa, build berjalan sekali).
+- File inti jarang diubah. Jika diubah, zip memuat file itu UTUH.
+- Daftar suara baru tiap misi: audio/list_misi_NN.txt (hanya nama yang belum pernah ada).
+- package/unique_name TIDAK BOLEH diubah. debug.keystore TIDAK BOLEH diganti
+  (agar APK baru bisa menimpa APK lama dan simpanan tidak hilang).
+- GDScript: indentasi 4 spasi, tanpa karakter non-ASCII, tanpa class_name,
+  tanpa "for a, b in dict", hindari ":=" untuk nilai Variant.
+
+STRUKTUR
+  main.tscn + scripts/main.gd   menu + peluncur misi (jarang diubah)
+  scripts/menu.gd               menu 10 misi, gembok, popup lanjut/ulang
+  scripts/misi/misi_NN.gd       satu file per misi (NN = 01..10)
+  scripts/lantai1.gd            gedung lantai 1 (turunan dunia.gd); lantai baru = file baru
+  scripts/dunia.gd              dasar dunia: lampu, pintu, sembunyi, dokumen, guru, tertangkap
+  scripts/guru.gd               Sang Guru (AI patroli, lihat, dengar, kejar)
+  scripts/pemain.gd, hud.gd, sfx.gd, util.gd, game_state.gd, shaders/ps1.gdshader
+  scripts/sfx_misi_NN.gd        (opsional) resep suara tambahan untuk misi NN (NN>=03)
+
+KERANGKA MISI (scripts/misi/misi_NN.gd), menu membaca JUDUL dan RINGKAS otomatis
+  extends Node
+  const JUDUL = "..."
+  const RINGKAS = "..."
+  var main        # diisi oleh main.gd sebelum jalankan()
+  func jalankan(lanjut: bool):          # coroutine; lanjut = lanjut dari checkpoint
+      var hud = main.hud
+      hud.hitamkan()
+      var dunia = main.buat_dunia(preload("res://scripts/lantai1.gd"))   # lantai apa pun
+      var pemain = main.pemain
+      dunia.hook_aksi = Callable(self, "_aksi")   # _aksi(id, node) -> bool (true = sudah ditangani)
+      ... atur cerita ...
+  Selesai: GameState.tandai_selesai(NN); layar akhir; main.kembali_ke_menu()
+  Checkpoint: GameState.set_cp(NN, "nama") dan GameState.ambil_cp(NN) ("awal" = tidak ada)
+  Isi dunia.selesai = true saat misi selesai (mencegah tertangkap).
+
+API PENTING
+  main: hud, pemain, dunia, buat_dunia(skrip), kembali_ke_menu()
+  hud: hitamkan(), fade(alpha,detik), kilat(detik), kartu(teks,detik), bicara(teks,detik),
+       misi(teks), tampil_kontrol(bool), tampil_teks(t), sembunyi_teks(), set_prompt(t),
+       set_celah(bool), set_waspada(v,kejar), layar_akhir(judul,isi,info) [pilihan_menu "kiri"/"kanan"],
+       judul_sembunyi(), reset_total(), senter_tersedia (var)
+  sfx (autoload Sfx): putar(nama,db,pitch), mulai_loop(nama,db), atur_loop(nama,db,pitch),
+       henti_loop(nama), matikan_semua_loop(), siap
+       Audio: jika ada audio/<nama>.ogg/.wav/.mp3 dipakai, jika tidak disintesis lewat kode.
+       Suara baru tanpa file: buat scripts/sfx_misi_NN.gd dengan
+         func daftar() -> Array, func loops() -> Array (opsional),
+         func resep(nama, sfx) -> PackedFloat32Array atau null (pakai sfx._kosong(detik)).
+  dunia (dasar): pemain, hud, env, guru, pintu{id:{pivot,badan,terbuka,derajat,sibuk}},
+       tempat{id:{dalam,keluar,depan,yaw}}, teks_dokumen{id:teks}, komentar_dokumen{id:teks},
+       acak_aktif, sedang_adegan, mati, selesai, titik_ulang, yaw_ulang, guru_ulang,
+       pesan_ulang, pesan_tangkap, hook_aksi, kembali_menu,
+       peta_node/peta_sisi/peta_patroli/peta_pintu (peta jalur guru),
+       munculkan_guru(pos), tertangkap(), guru_buka(id), _lampu_padam(), _buat_kuntilanak(),
+       helper bangun: _dinding_z/_dinding_x, _meja, _benda(posisi,ukuran,warna,id,label,tabrak,emisi),
+       _buat_pintu(id,engsel,lebar,searah_z,derajat), _lampu(...), _daftar_tempat(...), _tulisan3d(...)
+       Interaksi: benda StaticBody3D dengan meta "id" dan "label". id "dok_*" = dokumen,
+       id yang ada di tempat{} = sembunyi, id di pintu{} = pintu.
+  lantai1: TITIK_AWAL, jam_label, sampah_node, kunci_node, kondisi_gelap(), kondisi_kunci()
+       Id: sampah_1..3, kunci_lobi, dok_1..3, pintu_9b, pintu_9a, pintu_lobi, loker_0..7, lemari_9b, lemari_9a
+  guru (dunia.guru): state, waspada, kec_patroli(1.6), kec_curiga(2.4), kec_cari(2.2),
+       kec_kejar(3.9), jarak_lihat(5.5), jarak_lihat_senter(10.0), jeda, mulai(pos), reset(pos), berhenti()
+  pemain: kamera, senter, senter_ada, terkunci, beku, yaw, pitch, sasaran, getar(detik,kekuatan)
+  GameState: data{terbuka,selesai_misi,cp_misi,dokumen,selesai}, JUMLAH_MISI=10,
+       misi_terbuka(n), misi_selesai(n), tandai_selesai(n), ambil_cp(n), set_cp(n,nama), simpan(), muat()
+       Kecepatan jalan Raka 2.5, lari 4.3.
+
+SUARA YANG SUDAH ADA (jangan didaftarkan lagi)
+  ambience_sekolah, langkah_jalan, langkah_lari, pintu_buka, pintu_terkunci, kunci_ambil,
+  sapu, senter_klik, listrik_mati, bel_sekolah, langkah_atas, bisik, jumpscare,
+  kuntilanak_tawa, detak_jantung, langkah_guru, guru_kejar
+
+RENCANA MISI
+  1 Hukuman Bersih-Bersih (Kuntilanak)   2 Sang Guru (kejar+sembunyi)   3 Lantai Atas (Genderuwo, sekering)
+  4 Perpustakaan (hantu siswi, kode)     5 Lorong Pocong (hanya bergerak saat tak disorot, 3 kunci)
+  6 Ruang Guru (Tuyul mencuri barang)    7 Toilet (baterai senter terbatas, Kuntilanak agresif)
+  8 Lapangan dan Gudang (Genderuwo+Pocong, berkabut)   9 Kelas 9-X (kebenaran, semua hantu bergantian)
+  10 Ruang Kepala Sekolah (boss, penguasa kerajaan hantu; ending baik/buruk/rahasia)
+  Tiap misi makin sulit: kec_kejar naik, hantu bertambah, tempat sembunyi dan baterai berkurang.

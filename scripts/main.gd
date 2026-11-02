@@ -1,16 +1,20 @@
 extends Node
 
-# Penyusun utama. Gambar 3D dirender kecil lalu diperbesar (efek pixel ala PS1).
+# Pengendali utama THE LAST. Menampilkan menu, lalu menjalankan skrip misi terpilih
+# (scripts/misi/misi_NN.gd). Gambar 3D dirender kecil lalu diperbesar (efek PS1).
 # Ubah PENGECIL: 2 = lebih tajam, 3 = lebih kasar/retro, 4 = sangat kasar.
 const PENGECIL = 3
 
 const HudScript = preload("res://scripts/hud.gd")
 const PemainScript = preload("res://scripts/pemain.gd")
-const DuniaScript = preload("res://scripts/dunia.gd")
+const MenuScript = preload("res://scripts/menu.gd")
 
 var hud
-var pemain
-var dunia
+var pemain = null
+var dunia = null
+var vp
+var menu
+var misi = null
 
 
 func _ready():
@@ -27,33 +31,67 @@ func _ready():
     wadah.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
     lapis.add_child(wadah)
     wadah.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-    var vp = SubViewport.new()
+    vp = SubViewport.new()
     vp.msaa_3d = Viewport.MSAA_DISABLED
     wadah.add_child(vp)
 
     hud = HudScript.new()
     hud.layer = 10
     add_child(hud)
-    hud.hitamkan()
-    hud.judul_tampil("SEKOLAH TERAKHIR", "jam 00:00", "Sentuh layar untuk mulai")
+    hud.reset_total()
 
-    dunia = DuniaScript.new()
+    menu = MenuScript.new()
+    menu.layer = 20
+    add_child(menu)
+    menu.misi_dipilih.connect(_on_misi_dipilih)
+    menu.tampil()
+
+
+# Dipanggil skrip misi untuk membuat gedung/lantai dan pemain.
+func buat_dunia(skrip):
+    dunia = skrip.new()
     vp.add_child(dunia)
     pemain = PemainScript.new()
     vp.add_child(pemain)
     dunia.siapkan(pemain, hud)
+    dunia.kembali_menu = Callable(self, "kembali_ke_menu")
+    return dunia
 
-    await hud.tunggu_sentuh()
-    hud.judul_sembunyi()
-    hud.tampil_teks("Memuat suara...")
-    await get_tree().process_frame
-    await Sfx.siapkan()
-    hud.sembunyi_teks()
-    await dunia.mulai()
+
+func _on_misi_dipilih(n, lanjut):
+    hud.reset_total()
+    hud.hitamkan()
+    if not Sfx.siap:
+        hud.tampil_teks("Memuat suara...")
+        await get_tree().process_frame
+        await Sfx.siapkan()
+        hud.sembunyi_teks()
+    var jalur = "res://scripts/misi/misi_%02d.gd" % n
+    if not ResourceLoader.exists(jalur):
+        kembali_ke_menu()
+        return
+    var skrip = load(jalur)
+    misi = skrip.new()
+    misi.main = self
+    add_child(misi)
+    await misi.jalankan(lanjut)
+
+
+func kembali_ke_menu():
+    Sfx.matikan_semua_loop()
+    if misi != null:
+        misi.queue_free()
+        misi = null
+    for c in vp.get_children():
+        c.queue_free()
+    dunia = null
+    pemain = null
+    hud.reset_total()
+    menu.tampil()
 
 
 func _process(_delta):
-    if pemain == null or hud == null:
+    if pemain == null or hud == null or dunia == null:
         return
     var teks = ""
     if dunia.sembunyi_id != "":
