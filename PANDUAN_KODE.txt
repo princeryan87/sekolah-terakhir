@@ -19,6 +19,9 @@ STRUKTUR
   scripts/lantai1.gd            gedung lantai 1 (turunan dunia.gd); lantai baru = file baru
   scripts/lantai2.gd            gedung lantai 2 (Misi 3)
   scripts/genderuwo.gd          Genderuwo (turunan guru.gd, takut senter, menutup pintu)
+  scripts/perpustakaan.gd       gedung perpustakaan (Misi 4)
+  scripts/hantu_siswi.gd        hantu siswi (turunan guru.gd; sinyal bisikan; bersenandung)
+  scripts/keypad.gd             keypad angka 4 digit (CanvasLayer; buka(), tutup(), tampil_pesan(); sinyal kode_dimasukkan, ditutup)
   scripts/dunia.gd              dasar dunia: lampu, pintu, sembunyi, dokumen, guru, tertangkap
   scripts/guru.gd               Sang Guru (AI patroli, lihat, dengar, kejar)
   scripts/pemain.gd, hud.gd, sfx.gd, util.gd, game_state.gd, shaders/ps1.gdshader
@@ -62,6 +65,8 @@ API PENTING
        _buat_pintu(id,engsel,lebar,searah_z,derajat), _lampu(...), _daftar_tempat(...), _tulisan3d(...)
        Interaksi: benda StaticBody3D dengan meta "id" dan "label". id "dok_*" = dokumen,
        id yang ada di tempat{} = sembunyi, id di pintu{} = pintu.
+  perpustakaan: TITIK_AWAL; id: dok_6..8, gembok_kode, pintu_masuk, pintu_terlarang, lemari_p1..p6; TEPAT 6 meja baca
+       Kode gembok Misi 4 = 3916 (bel 3, kelas 9-X, 1 siswa, 6 meja baca)
   lantai2: TITIK_AWAL, _lampu_nyala(); id: sekering_1..3, kotak_sekering, pintu_perpus, pintu_musik/_8a/_8b/_arsip,
        dok_4, dok_5, lemari_musik/_8a/_8b/_arsip, loker_0..6
   lantai1: TITIK_AWAL, jam_label, sampah_node, kunci_node, kondisi_gelap(), kondisi_kunci()
@@ -81,9 +86,10 @@ SUARA YANG SUDAH ADA (jangan didaftarkan lagi)
   sapu, senter_klik, listrik_mati, bel_sekolah, langkah_atas, bisik, jumpscare,
   kuntilanak_tawa, detak_jantung, langkah_guru, guru_kejar
   (Misi 3 menambah: genderuwo_langkah, genderuwo_geram, listrik_nyala; resep di scripts/sfx_misi_03.gd)
+  (Misi 4 menambah: hantu_siswi_nyanyi, hantu_siswi_bisik, buku_jatuh, keypad_tekan, keypad_salah, keypad_benar; sfx_misi_04.gd)
 
 RENCANA MISI
-  [SELESAI DIBUAT: misi 1, 2, 3]
+  [SELESAI DIBUAT: misi 1, 2, 3, 4]
   1 Hukuman Bersih-Bersih (Kuntilanak)   2 Sang Guru (kejar+sembunyi)   3 Lantai Atas (Genderuwo, sekering)
   4 Perpustakaan (hantu siswi, kode)     5 Lorong Pocong (hanya bergerak saat tak disorot, 3 kunci)
   6 Ruang Guru (Tuyul mencuri barang)    7 Toilet (baterai senter terbatas, Kuntilanak agresif)

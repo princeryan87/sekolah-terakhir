@@ -1,0 +1,14 @@
+SUARA BARU UNTUK MISI 4 (PERPUSTAKAAN)
+======================================
+Taruh file di folder audio/ dengan nama PERSIS di bawah (.ogg / .wav / .mp3).
+Tanpa file, game memakai suara buatan kode.
+
+hantu_siswi_nyanyi  Anak perempuan bersenandung pelan, nada minor sedikit sumbang, seperti kotak musik (3-4 detik)
+hantu_siswi_bisik   Bisikan anak kecil yang dingin; juga dipakai saat dia mulai mengejar dan saat menangkap (1-2 detik)
+buku_jatuh          Buku tebal jatuh ke lantai di kejauhan (sekitar 0.5 detik)
+keypad_tekan        Bunyi "bip" singkat tombol keypad (0.1 detik)
+keypad_salah        Bunyi "bzzt" kode salah (0.4 detik)
+keypad_benar        Dua bunyi "bip-bip" naik, kode benar (0.5 detik)
+
+Kata kunci pencarian: child humming creepy, music box eerie, girl whisper horror, heavy book drop,
+keypad beep, keypad error buzz, access granted beep
