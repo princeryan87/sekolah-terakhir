@@ -12,6 +12,8 @@ var kec_cari = 2.2
 var kec_kejar = 3.9
 var jarak_lihat = 5.5
 var jarak_lihat_senter = 10.0
+var suara_langkah = "langkah_guru"
+var suara_raung = "guru_kejar"
 
 # Peta jalur diambil dari dunia (dunia.peta_node, peta_sisi, peta_patroli, peta_pintu)
 var NODE = {}
@@ -75,6 +77,11 @@ func _buat_model():
     cahaya.omni_range = 3.0
     cahaya.shadow_enabled = false
     add_child(cahaya)
+
+
+# Kait untuk hantu turunan: kembalikan true jika perilaku normal harus dilewati.
+func _ganti_proses(_delta):
+    return false
 
 
 # ---------- perintah dari luar ----------
@@ -241,7 +248,7 @@ func _mulai_kejar():
     waspada = 1.0
     _ke_spot = false
     _jalur_hilang = false
-    Sfx.putar("guru_kejar", -1.0)
+    Sfx.putar(suara_raung, -1.0)
     Input.vibrate_handheld(150)
 
 
@@ -259,6 +266,8 @@ func _process(delta):
     if dunia == null or pemain == null:
         return
     if jeda or dunia.sedang_adegan or dunia.mati or state == "berhenti":
+        return
+    if _ganti_proses(delta):
         return
     var dist = global_position.distance_to(pemain.global_position)
     melihat_sekarang = _bisa_melihat(dist)
@@ -365,4 +374,4 @@ func _process(delta):
             else:
                 _langkah_t = 0.62
             if dist < 20.0:
-                Sfx.putar("langkah_guru", clampf(-4.0 - dist * 1.6, -40.0, -4.0), randf_range(0.9, 1.1))
+                Sfx.putar(suara_langkah, clampf(-4.0 - dist * 1.6, -40.0, -4.0), randf_range(0.9, 1.1))

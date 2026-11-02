@@ -355,8 +355,10 @@ func _keluar_sembunyi():
 
 # ---------- Sang Guru dan tertangkap ----------
 
-func munculkan_guru(pos: Vector3):
-    guru = GuruScript.new()
+func munculkan_guru(pos: Vector3, skrip = null):
+    if skrip == null:
+        skrip = GuruScript
+    guru = skrip.new()
     guru.dunia = self
     guru.pemain = pemain
     add_child(guru)
@@ -377,7 +379,10 @@ func tertangkap():
         pemain.pitch = 0.2
     hud.set_celah(false)
     hud.set_waspada(0.0, false)
-    Sfx.putar("guru_kejar", 0.0)
+    var raung = "guru_kejar"
+    if guru != null:
+        raung = guru.suara_raung
+    Sfx.putar(raung, 0.0)
     Sfx.putar("jumpscare", 0.0)
     Input.vibrate_handheld(600)
     hud.kilat(0.5)
