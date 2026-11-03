@@ -1,0 +1,11 @@
+SUARA BARU UNTUK MISI 6 (RUANG GURU)
+====================================
+Taruh file di folder audio/ dengan nama PERSIS di bawah (.ogg / .wav / .mp3).
+Tanpa file, game memakai suara buatan kode.
+
+tuyul_tawa      Tawa cekikikan anak kecil yang nakal dan melengking, beberapa "hi-hi-hi" (1 detik)
+tuyul_langkah   Langkah kecil dan cepat, seperti telapak kaki anak kecil (satu langkah, 0.15 detik)
+kertas_ambil    Kertas diambil dan bergemerisik (0.4 detik)
+denah_pasang    Potongan kertas dipasang lalu bunyi "ting" harapan, tiga nada naik (1 detik)
+
+Kata kunci pencarian: creepy child giggle, mischievous kid laugh, small footsteps running, paper pickup rustle, puzzle solved chime
