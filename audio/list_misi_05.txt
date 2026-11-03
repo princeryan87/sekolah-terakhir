@@ -1,0 +1,11 @@
+SUARA BARU UNTUK MISI 5 (LORONG POCONG)
+=======================================
+Taruh file di folder audio/ dengan nama PERSIS di bawah (.ogg / .wav / .mp3).
+Tanpa file, game memakai suara buatan kode.
+
+pocong_lompat  Satu lompatan kain/benda berat mendarat di lantai beton, "bruk" teredam (0.3-0.5 detik)
+pocong_erang   Erangan panjang, serak dan dingin dari sosok berkafan; juga dipakai saat menangkap (1-2 detik)
+kunci_besi     Kunci besi tua diambil, denting logam berat (0.6 detik)
+pintu_besi     Pintu besi besar berderit dan bergeser berat (1-2 detik)
+
+Kata kunci pencarian: heavy thud landing, ghost groan low, old iron key clink, heavy metal door creak, corpse hop
