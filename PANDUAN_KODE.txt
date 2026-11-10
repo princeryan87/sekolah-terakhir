@@ -25,6 +25,9 @@ STRUKTUR
   scripts/pocong.gd             Pocong (turunan guru.gd; membeku saat disorot senter; mengganti seluruh perilaku via _ganti_proses)
   scripts/ruang_guru.gd         ruang guru (Misi 6)
   scripts/tuyul.gd              Tuyul (turunan guru.gd; dikelola langsung oleh misi, BUKAN dunia.guru; callback on_curi/on_rebut/on_jatuh)
+  scripts/toilet.gd             toilet lantai 2 (Misi 7)
+  scripts/kuntilanak.gd         Kuntilanak agresif (turunan guru.gd; melayang, tawa dari jauh)
+  scripts/baterai_hud.gd        indikator baterai senter (CanvasLayer; set_nilai(0..100)); baterai dikelola misi
   scripts/keypad.gd             keypad angka 4 digit (CanvasLayer; buka(), tutup(), tampil_pesan(); sinyal kode_dimasukkan, ditutup)
   scripts/dunia.gd              dasar dunia: lampu, pintu, sembunyi, dokumen, guru, tertangkap
   scripts/guru.gd               Sang Guru (AI patroli, lihat, dengar, kejar)
@@ -69,6 +72,7 @@ API PENTING
        _buat_pintu(id,engsel,lebar,searah_z,derajat), _lampu(...), _daftar_tempat(...), _tulisan3d(...)
        Interaksi: benda StaticBody3D dengan meta "id" dan "label". id "dok_*" = dokumen,
        id yang ada di tempat{} = sembunyi, id di pintu{} = pintu.
+  toilet: TITIK_AWAL; id: cermin_1..4, baterai_1..5, dok_13, dok_14, pintu_lapangan, bilik_k1..k4, bilik_r1..r4 (sembunyi)
   ruang_guru: TITIK_AWAL; id: denah_1..3, papan_denah, dok_11, dok_12, lemari_g1..g4; tampilkan_denah(); jalur melingkar di sekitar blok tengah
   lorong_lama: TITIK_AWAL; id: kunci_1..3, pintu_besi, dok_9, dok_10; tanpa tempat sembunyi; guru_ulang (0,0,-40)
   perpustakaan: TITIK_AWAL; id: dok_6..8, gembok_kode, pintu_masuk, pintu_terlarang, lemari_p1..p6; TEPAT 6 meja baca
@@ -93,12 +97,13 @@ SUARA YANG SUDAH ADA (jangan didaftarkan lagi)
   sapu, senter_klik, listrik_mati, bel_sekolah, langkah_atas, bisik, jumpscare,
   kuntilanak_tawa, detak_jantung, langkah_guru, guru_kejar
   (Misi 3 menambah: genderuwo_langkah, genderuwo_geram, listrik_nyala; resep di scripts/sfx_misi_03.gd)
+  (Misi 7 menambah: kuntilanak_melayang, cermin_tutup, baterai_ambil, senter_habis; sfx_misi_07.gd)
   (Misi 6 menambah: tuyul_tawa, tuyul_langkah, kertas_ambil, denah_pasang; sfx_misi_06.gd)
   (Misi 5 menambah: pocong_lompat, pocong_erang, kunci_besi, pintu_besi; sfx_misi_05.gd)
   (Misi 4 menambah: hantu_siswi_nyanyi, hantu_siswi_bisik, buku_jatuh, keypad_tekan, keypad_salah, keypad_benar; sfx_misi_04.gd)
 
 RENCANA MISI
-  [SELESAI DIBUAT: misi 1, 2, 3, 4, 5, 6]
+  [SELESAI DIBUAT: misi 1, 2, 3, 4, 5, 6, 7]
   1 Hukuman Bersih-Bersih (Kuntilanak)   2 Sang Guru (kejar+sembunyi)   3 Lantai Atas (Genderuwo, sekering)
   4 Perpustakaan (hantu siswi, kode)     5 Lorong Pocong (hanya bergerak saat tak disorot, 3 kunci)
   6 Ruang Guru (Tuyul mencuri barang)    7 Toilet (baterai senter terbatas, Kuntilanak agresif)

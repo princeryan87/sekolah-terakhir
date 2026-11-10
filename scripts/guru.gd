@@ -116,6 +116,11 @@ func dengar(pos: Vector3, radius: float):
     state = "curiga"
 
 
+# Membuat hantu menuju satu titik untuk memeriksa (dipakai misi untuk memancing hantu).
+func curiga(pos: Vector3):
+    dengar(pos, 1000000.0)
+
+
 # ---------- jalur ----------
 
 func _node_terdekat(p: Vector3) -> String:

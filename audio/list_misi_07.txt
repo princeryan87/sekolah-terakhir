@@ -1,0 +1,12 @@
+SUARA BARU UNTUK MISI 7 (TOILET LANTAI DUA)
+===========================================
+Taruh file di folder audio/ dengan nama PERSIS di bawah (.ogg / .wav / .mp3).
+Tanpa file, game memakai suara buatan kode.
+
+kuntilanak_melayang  Desir halus kain melayang tanpa langkah kaki, terdengar saat dia bergerak (0.5 detik)
+cermin_tutup         Kain tebal ditarik menutupi cermin (0.5 detik)
+baterai_ambil        Baterai diambil, klik logam kecil lalu bunyi "ting" harapan (0.3 detik)
+senter_habis         Senter mati kehabisan daya: dengung turun lalu padam (0.6 detik)
+
+Catatan: tawa Kuntilanak memakai kuntilanak_tawa yang sudah ada sejak Misi 1.
+Kata kunci pencarian: cloth swoosh, ghost whoosh soft, battery insert click, power down flashlight, flashlight turn off
