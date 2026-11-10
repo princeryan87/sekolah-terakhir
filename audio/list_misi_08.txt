@@ -1,0 +1,9 @@
+SUARA BARU UNTUK MISI 8 (LAPANGAN DAN GUDANG)
+=============================================
+Taruh file di folder audio/ dengan nama PERSIS di bawah (.ogg / .wav / .mp3).
+Tanpa file, game memakai suara buatan kode.
+
+angin_lapangan  Angin malam di lapangan terbuka, desir pelan dan dingin, disertai sedikit jangkrik (LOOP, 20-60 detik, sambungan mulus)
+
+Catatan: suara lain di misi ini memakai suara yang sudah ada (genderuwo_geram, pocong_erang, pintu_besi, kunci_besi, dll).
+Kata kunci pencarian: night wind field ambience, crickets night loop, empty playground wind
