@@ -1,0 +1,11 @@
+SUARA BARU UNTUK MISI 10 (RUANG KEPALA SEKOLAH, TAMAT SEASON 1)
+===============================================================
+Taruh file di folder audio/ dengan nama PERSIS di bawah (.ogg / .wav / .mp3).
+Tanpa file, game memakai suara buatan kode.
+
+lonceng_besar  Lonceng perunggu besar berdentang, gema panjang dan dalam (2-3 detik)
+kepsek_muncul  Kepala Sekolah muncul tiba-tiba: desir cepat + dentum rendah (1 detik)
+kepsek_geram   Suara geraman/hardikan berwibawa, sangat berat dan menekan (1-2 detik); dipakai saat dia menangkap
+gerbang_buka   Gerbang besi tua berderit membuka, panjang dan berat (2-3 detik)
+
+Kata kunci pencarian: huge bronze bell toll, school bell deep, demon voice low growl, authoritative monster voice, iron gate creak long, teleport whoosh boom
