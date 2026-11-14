@@ -8,6 +8,7 @@ const PENGECIL = 3
 const HudScript = preload("res://scripts/hud.gd")
 const PemainScript = preload("res://scripts/pemain.gd")
 const MenuScript = preload("res://scripts/menu.gd")
+const DevPanelScript = preload("res://scripts/dev_panel.gd")
 
 var hud
 var pemain = null
@@ -15,6 +16,11 @@ var dunia = null
 var vp
 var menu
 var misi = null
+var misi_no = 0
+var dev_panel
+var info_label
+var _jari = {}
+var _empat_t = 0.0
 
 
 func _ready():
@@ -44,7 +50,26 @@ func _ready():
     menu.layer = 20
     add_child(menu)
     menu.misi_dipilih.connect(_on_misi_dipilih)
+    menu.dev_diminta.connect(buka_dev)
     menu.tampil()
+
+    dev_panel = DevPanelScript.new()
+    dev_panel.layer = 50
+    dev_panel.main = self
+    add_child(dev_panel)
+
+    var lapis_info = CanvasLayer.new()
+    lapis_info.layer = 45
+    add_child(lapis_info)
+    info_label = Label.new()
+    info_label.position = Vector2(20.0, 70.0)
+    info_label.add_theme_font_size_override("font_size", 14)
+    info_label.add_theme_color_override("font_color", Color(0.6, 1.0, 0.6))
+    info_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+    info_label.add_theme_constant_override("outline_size", 5)
+    info_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    info_label.visible = false
+    lapis_info.add_child(info_label)
 
 
 # Dipanggil skrip misi untuk membuat gedung/lantai dan pemain.
@@ -71,6 +96,7 @@ func _on_misi_dipilih(n, lanjut):
         kembali_ke_menu()
         return
     var skrip = load(jalur)
+    misi_no = n
     misi = skrip.new()
     misi.main = self
     add_child(misi)
@@ -90,7 +116,67 @@ func kembali_ke_menu():
     menu.tampil()
 
 
-func _process(_delta):
+func buka_dev():
+    if not GameState.CHEAT_TERSEDIA:
+        return
+    if dev_panel.aktif:
+        return
+    dev_panel.buka()
+
+
+func dev_selesaikan_misi() -> bool:
+    if misi == null:
+        return false
+    for nama in ["_selesai_misi", "_selesai", "_buka_lobi", "_buka_perpus"]:
+        if misi.has_method(nama):
+            misi.call(nama)
+            return true
+    return false
+
+
+func dev_isi_baterai() -> bool:
+    if misi != null and misi.get("baterai") != null:
+        misi.set("baterai", 100.0)
+        return true
+    return false
+
+
+func _input(event):
+    if event is InputEventScreenTouch:
+        if event.pressed:
+            _jari[event.index] = true
+        else:
+            _jari.erase(event.index)
+
+
+func _teks_info() -> String:
+    var t = "FPS %d  Misi %d" % [Engine.get_frames_per_second(), misi_no]
+    if pemain != null and is_instance_valid(pemain):
+        t += "\nRaka x %.1f  z %.1f" % [pemain.global_position.x, pemain.global_position.z]
+    if dunia != null and dunia.guru != null and is_instance_valid(dunia.guru):
+        var jarak = dunia.guru.global_position.distance_to(pemain.global_position)
+        t += "\nHantu: %s  jarak %.1f  waspada %.2f" % [dunia.guru.state, jarak, dunia.guru.waspada]
+    if GameState.dev_kebal:
+        t += "\n[KEBAL]"
+    if GameState.dev_beku:
+        t += " [HANTU BEKU]"
+    return t
+
+
+func _process(delta):
+    # cheat tersembunyi di dalam misi: tahan 4 jari selama 2 detik
+    if GameState.CHEAT_TERSEDIA and misi != null and not get_tree().paused:
+        if _jari.size() >= 4:
+            _empat_t += delta
+            if _empat_t >= 2.0:
+                _empat_t = 0.0
+                _jari.clear()
+                buka_dev()
+        else:
+            _empat_t = 0.0
+    info_label.visible = GameState.dev_info and misi != null
+    if info_label.visible:
+        info_label.text = _teks_info()
     if pemain == null or hud == null or dunia == null:
         return
     var teks = ""

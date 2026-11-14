@@ -7,6 +7,15 @@ signal senter_ditekan
 
 const JUMLAH_MISI = 10
 
+# Cheat tersembunyi (lihat dev_panel.gd). Ubah ke false untuk mematikan seluruhnya.
+const CHEAT_TERSEDIA = true
+
+# Pengaturan developer (tidak disimpan; kembali normal tiap aplikasi dibuka)
+var dev_kebal = false
+var dev_beku = false
+var dev_info = false
+var dev_kecepatan = 1.0
+
 var gerak = Vector2.ZERO
 var lari = false
 var lihat = Vector2.ZERO
@@ -72,4 +81,14 @@ func ambil_cp(n: int) -> String:
 
 func set_cp(n: int, nama: String):
     data["cp_misi"][str(n)] = nama
+    simpan()
+
+
+func dev_buka_semua():
+    data["terbuka"] = JUMLAH_MISI
+    simpan()
+
+
+func dev_hapus():
+    data = {"terbuka": 1, "selesai_misi": [], "cp_misi": {}, "dokumen": [], "selesai": 0}
     simpan()

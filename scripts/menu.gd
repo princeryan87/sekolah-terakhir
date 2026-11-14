@@ -4,6 +4,7 @@ extends CanvasLayer
 # Misi yang filenya (scripts/misi/misi_NN.gd) belum ada tampil "SEGERA".
 
 signal misi_dipilih(n, lanjut)
+signal dev_diminta
 
 const KOLOM = 5
 
@@ -16,6 +17,7 @@ var _rect_popup = {}
 var _pesan = ""
 var _pesan_t = 0.0
 var _waktu_sentuh = 0
+var _ketukan = []
 
 
 func _ready():
@@ -187,6 +189,18 @@ func _ketuk(pos: Vector2):
                 elif nama == "ulang":
                     GameState.set_cp(n, "awal")
                     _mulai(n, false)
+        return
+    # cheat tersembunyi: ketuk tulisan judul 7 kali dalam 3 detik
+    var s = _ukuran()
+    var judul = Rect2(s.x * 0.5 - 170.0, s.y * 0.15 - 56.0, 340.0, 70.0)
+    if judul.has_point(pos):
+        var kini = Time.get_ticks_msec()
+        _ketukan.append(kini)
+        while _ketukan.size() > 0 and kini - _ketukan[0] > 3000:
+            _ketukan.remove_at(0)
+        if _ketukan.size() >= 7:
+            _ketukan.clear()
+            dev_diminta.emit()
         return
     for n in _rect_kartu:
         if _rect_kartu[n].has_point(pos):

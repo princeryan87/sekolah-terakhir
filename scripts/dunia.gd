@@ -367,6 +367,8 @@ func munculkan_guru(pos: Vector3, skrip = null):
 
 
 func tertangkap():
+    if GameState.dev_kebal:
+        return
     if mati or selesai:
         return
     mati = true

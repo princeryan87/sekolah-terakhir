@@ -32,6 +32,7 @@ STRUKTUR
   scripts/kelas_9x.gd           Kelas 9-X bawah tanah (Misi 9): 5 bangku ingatan, papan tulis, foto; setel_bangku_aktif(n), tampilkan_baris(n), tampilkan_raka()
   scripts/ruang_kepsek.gd       Ruang Kepala Sekolah (Misi 10): aula merah berpilar, lonceng_1..3, pintu_keluar, lemari_k1..k4
   scripts/kepsek.gd             Kepala Sekolah, boss (turunan guru.gd; teleport bila lama kehilangan jejak; kec_kejar diturunkan misi tiap lonceng)
+  scripts/dev_panel.gd          panel developer tersembunyi (jeda game; toggle di GameState: dev_kebal, dev_beku, dev_info, dev_kecepatan)
   scripts/keypad.gd             keypad angka 4 digit (CanvasLayer; buka(), tutup(), tampil_pesan(); sinyal kode_dimasukkan, ditutup)
   scripts/dunia.gd              dasar dunia: lampu, pintu, sembunyi, dokumen, guru, tertangkap
   scripts/guru.gd               Sang Guru (AI patroli, lihat, dengar, kejar)
@@ -132,3 +133,12 @@ AKHIR SEASON 1 DAN RENCANA SEASON 2
   Season 2 (rencana, belum dibuat): misi baru DI LUAR sekolah, perjalanan pulang ke rumah di malam hari.
   Bila dibuat: perluas GameState.JUMLAH_MISI (menu otomatis menampilkan lebih banyak kartu; atur tata letak menu.gd),
   atau buat file misi_11.gd dst. Menu hanya membaca scripts/misi/misi_NN.gd untuk NN <= JUMLAH_MISI.
+
+MODE DEVELOPER (CHEAT TERSEMBUNYI)
+  Buka: di menu ketuk tulisan "THE LAST" 7 kali dalam 3 detik; di dalam misi tahan 4 jari selama 2 detik.
+  Isi: Kebal, Bekukan hantu, Info debug, Kecepatan hantu (x0.5..x2), Buka semua misi, Selesaikan misi ini,
+       Isi baterai (Misi 7), Hapus simpanan. Game dijeda selama panel terbuka.
+  Matikan di rilis: GameState.CHEAT_TERSEDIA = false (scripts/game_state.gd).
+  Titik kait: dunia.tertangkap() (kebal), guru._process (beku), guru._maju (kecepatan), menu.dev_diminta, main.buka_dev().
+  Misi baru: sediakan salah satu metode _selesai_misi() / _selesai() / _buka_lobi() / _buka_perpus() agar tombol
+  "Selesaikan misi ini" bekerja (main.dev_selesaikan_misi memanggil yang pertama ditemukan).

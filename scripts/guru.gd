@@ -186,6 +186,7 @@ func _pilih_patroli():
 
 
 func _maju(delta: float, kec: float) -> bool:
+    kec = kec * GameState.dev_kecepatan
     if jalur.is_empty():
         return true
     var tgt = jalur[0]
@@ -270,7 +271,7 @@ func _mulai_cari():
 func _process(delta):
     if dunia == null or pemain == null:
         return
-    if jeda or dunia.sedang_adegan or dunia.mati or state == "berhenti":
+    if jeda or dunia.sedang_adegan or dunia.mati or state == "berhenti" or GameState.dev_beku:
         return
     if _ganti_proses(delta):
         return
